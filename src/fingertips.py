@@ -1,12 +1,13 @@
-
-import os
-from fastapi import FastAPI, HTTPException
+from prefect import task, Flow
+from fastapi import HTTPException
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage, AIMessage
-from models import ChatRequest,ChatResponse
+import os
+from models import ChatRequest, ChatResponse
 
+# Load environment variables
 load_dotenv()
 MONGO_URI = os.getenv("MONGO_URI")
 GROQ_API_KEY = os.getenv("GROQ_API")
@@ -18,13 +19,8 @@ messages_collection = db["sessions"]
 
 groq_model = ChatGroq(model="llama3-8b-8192", api_key=GROQ_API_KEY)
 
-# FastAPI app
-app = FastAPI()
-
-
-
-@app.post("/chat", response_model=ChatResponse)
-async def chat(chat_request: ChatRequest):
+@task
+def process_chat(chat_request: ChatRequest):
     user_id = chat_request.user_id
     user_message = chat_request.message
 
@@ -60,4 +56,9 @@ async def chat(chat_request: ChatRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating response: {str(e)}")
 
+with Flow("Chat Processing") as flow:
+    chat_request = ChatRequest(user_id="example_user", message="Hello, how are you?")
+    process_chat(chat_request)
 
+if __name__ == "__main__":
+    flow.run()

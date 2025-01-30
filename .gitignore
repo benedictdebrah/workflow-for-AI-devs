@@ -181,3 +181,5 @@ wheels/
 
 # Virtual environments
 .venv
+
+src/.env
