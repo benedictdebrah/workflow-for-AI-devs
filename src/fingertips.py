@@ -1,4 +1,4 @@
-from prefect import task, Flow
+from prefect import task, flow
 from fastapi import HTTPException
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -56,9 +56,13 @@ def process_chat(chat_request: ChatRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating response: {str(e)}")
 
-with Flow("Chat Processing") as flow:
+
+@flow
+def chat_flow():
     chat_request = ChatRequest(user_id="example_user", message="Hello, how are you?")
     process_chat(chat_request)
-
+    
 if __name__ == "__main__":
-    flow.run()
+    chat_flow()
+
+
