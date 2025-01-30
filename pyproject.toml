@@ -1,0 +1,19 @@
+[project]
+name = "fingertipsconfig"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.7",
+    "groq>=0.15.0",
+    "langchain-core>=0.3.31",
+    "langchain-groq>=0.2.3",
+    "langgraph>=0.2.67",
+    "langserve>=0.3.1",
+    "phi>=0.6.7",
+    "phidata>=2.7.9",
+    "pydantic>=2.10.6",
+    "python-dotenv>=1.0.1",
+    "sqlalchemy>=2.0.37",
+]
